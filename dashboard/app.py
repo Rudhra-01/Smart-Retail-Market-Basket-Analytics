@@ -157,7 +157,6 @@ elif page == "Market Basket Analysis":
         fig,
         use_container_width=True
     )
-
 # ======================================================
 # RECOMMENDATION PAGE
 # ======================================================
@@ -166,32 +165,32 @@ elif page == "Recommendations":
 
     st.header("🎯 Product Recommendation")
 
-    products = st.text_input(
-        "Enter Product Name"
-    )
+    API_URL = "https://smart-retail-market-basket-analytics.onrender.com/recommend"
+
+    product = st.text_input("Enter Product Name")
 
     if st.button("Recommend"):
 
         try:
 
             response = requests.get(
-                f"http://127.0.0.1:8000/recommend?items={products}"
+                API_URL,
+                params={"items": product}
             )
+
+            response.raise_for_status()
 
             result = response.json()
 
-            st.success(
-                "Recommendations Generated"
-            )
+            st.success("Recommendations Generated")
 
-            for item in result["recommendations"]:
-
-                st.write("✅", item)
+            if result["recommendations"]:
+                for item in result["recommendations"]:
+                    st.write("✅", item)
+            else:
+                st.warning("No recommendations found.")
 
         except Exception as e:
 
-            st.error(
-                "FastAPI Server Not Running"
-            )
-
+            st.error("Unable to connect to FastAPI Server")
             st.code(str(e))

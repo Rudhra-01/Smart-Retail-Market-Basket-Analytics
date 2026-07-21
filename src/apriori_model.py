@@ -1,12 +1,9 @@
 import pandas as pd
-
 from mlxtend.frequent_patterns import apriori
 from mlxtend.frequent_patterns import association_rules
-
 df = pd.read_csv(
     "data/processed/cleaned_data.csv"
 )
-
 basket = (
     df.groupby(
         ['InvoiceNo', 'Description']
@@ -16,7 +13,7 @@ basket = (
       .fillna(0)
 )
 
-basket = (basket > 0).astype(int)
+basket = basket.astype(bool)
 
 frequent_itemsets = apriori(
     basket,
